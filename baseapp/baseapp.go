@@ -781,7 +781,9 @@ func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg, mode runTxMode) (*s
 
 		if handler := app.msgServiceRouter.Handler(msg); handler != nil {
 			// ADR 031 request type routing
+			app.logger.Info("COSMOS: New")
 			msgResult, err = handler(ctx, msg)
+			app.logger.Info(msgResult.Log)
 			eventMsgName = sdk.MsgTypeURL(msg)
 		} else if legacyMsg, ok := msg.(legacytx.LegacyMsg); ok {
 			// legacy sdk.Msg routing
@@ -789,14 +791,18 @@ func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg, mode runTxMode) (*s
 			// proto messages and has registered all `Msg services`, then this
 			// path should never be called, because all those Msgs should be
 			// registered within the `msgServiceRouter` already.
+			app.logger.Info("COSMOS: Legacy")
 			msgRoute := legacyMsg.Route()
 			eventMsgName = legacyMsg.Type()
+			app.logger.Info(msgRoute)
+			app.logger.Info(eventMsgName)
 			handler := app.router.Route(ctx, msgRoute)
 			if handler == nil {
 				return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized message route: %s; message index: %d", msgRoute, i)
 			}
 
 			msgResult, err = handler(ctx, msg)
+			app.logger.Info(msgResult.Log)
 		} else {
 			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "can't route message %+v", msg)
 		}

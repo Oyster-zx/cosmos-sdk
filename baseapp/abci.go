@@ -229,6 +229,8 @@ func (app *BaseApp) EndBlock(req abci.RequestEndBlock) (res abci.ResponseEndBloc
 // the ResponseCheckTx will contain relevant gas execution context.
 func (app *BaseApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
 	var mode runTxMode
+	fmt.Println("COSMOS: CheckTx")
+	app.logger.Info("COSMOS: CheckTx")
 
 	switch {
 	case req.Type == abci.CheckTxType_New:

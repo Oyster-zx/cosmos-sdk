@@ -667,6 +667,11 @@ func (app *BaseApp) runTx(mode runTxMode, txBytes []byte) (gInfo sdk.GasInfo, re
 		return sdk.GasInfo{}, nil, nil, 0, err
 	}
 
+	app.logger.Info("COSMOS-SDK: Message array")
+	for i := 0; i < len(msgs); i++ {
+		app.logger.Info(msgs[i].String())
+	}
+
 	if app.anteHandler != nil {
 		var (
 			anteCtx sdk.Context

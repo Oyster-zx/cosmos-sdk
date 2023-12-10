@@ -94,6 +94,7 @@ func (app *BaseApp) InitChain(req abci.RequestInitChain) (res abci.ResponseInitC
 	// In the case of a new chain, AppHash will be the hash of an empty string.
 	// During an upgrade, it'll be the hash of the last committed block.
 	var appHash []byte
+	app.logger.Info("COSMOS-SDK: appHash")
 	if !app.LastCommitID().IsZero() {
 		appHash = app.LastCommitID().Hash
 	} else {
@@ -102,6 +103,7 @@ func (app *BaseApp) InitChain(req abci.RequestInitChain) (res abci.ResponseInitC
 		emptyHash := sha256.Sum256([]byte{})
 		appHash = emptyHash[:]
 	}
+	app.logger.Info(string(appHash))
 
 	// NOTE: We don't commit, but BeginBlock for block `initial_height` starts from this
 	// deliverState.

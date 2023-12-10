@@ -682,6 +682,9 @@ func (app *BaseApp) runTx(mode runTxMode, txBytes []byte) (gInfo sdk.GasInfo, re
 		// performance benefits, but it'll be more difficult to get right.
 		anteCtx, msCache = app.cacheTxContext(ctx, txBytes)
 		anteCtx = anteCtx.WithEventManager(sdk.NewEventManager())
+		if tx != nil && tx.GetMsgs() != nil && len(tx.GetMsgs()) > 0 {
+			app.logger.Info(tx.GetMsgs()[0].String())
+		}
 		newCtx, err := app.anteHandler(anteCtx, tx, mode == runTxModeSimulate)
 
 		if !newCtx.IsZero() {
@@ -733,7 +736,17 @@ func (app *BaseApp) runTx(mode runTxMode, txBytes []byte) (gInfo sdk.GasInfo, re
 			}
 
 			result.Events = append(result.Events, newCtx.EventManager().ABCIEvents()...)
+			app.logger.Info("COSMOS-SDK: Events")
+			if result != nil && result.Events != nil && len(result.Events) != 0 {
+				app.logger.Info(result.Events[0].Type)
+			}
+
 		}
+
+		//if result != nil && result.Events != nil && len(result.Events) > 0 {
+		//	app.logger.Info("COSOMOS-SDK: events test")
+		//	app.logger.Info(result.Events[0].String())
+		//}
 
 		if mode == runTxModeDeliver {
 			// When block gas exceeds, it'll panic and won't commit the cached store.

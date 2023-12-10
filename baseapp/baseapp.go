@@ -733,6 +733,11 @@ func (app *BaseApp) runTx(mode runTxMode, txBytes []byte) (gInfo sdk.GasInfo, re
 			}
 
 			result.Events = append(result.Events, newCtx.EventManager().ABCIEvents()...)
+			app.logger.Info("COSMOS-SDK: Events")
+			if result != nil && result.Events != nil && len(result.Events) != 0 {
+				app.logger.Info(result.Events[0].Type)
+			}
+
 		}
 
 		if mode == runTxModeDeliver {

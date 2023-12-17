@@ -1,6 +1,7 @@
 package types
 
 import (
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -35,6 +36,10 @@ func (msg MsgSend) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.ToAddress); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", err)
 	}
+
+	fmt.Println("COSMOS-SDK: send checked")
+	fmt.Println(msg.FromAddress)
+	fmt.Println(msg.ToAddress)
 
 	if !msg.Amount.IsValid() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())

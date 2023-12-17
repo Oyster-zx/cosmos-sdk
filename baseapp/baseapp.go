@@ -672,6 +672,11 @@ func (app *BaseApp) runTx(mode runTxMode, txBytes []byte) (gInfo sdk.GasInfo, re
 	}
 
 	msgs := tx.GetMsgs()
+	if len(msgs) > 0 {
+		if msgs[0] != nil {
+			app.logger.Info(msgs[0].String())
+		}
+	}
 	if err := validateBasicTxMsgs(msgs); err != nil {
 		return sdk.GasInfo{}, nil, nil, 0, err
 	}
